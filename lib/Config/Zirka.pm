@@ -9,7 +9,6 @@ use warnings;
 sub new {
     my $self=shift;
     my $ref={
-                stack => {}
             };
 
     bless($ref, $self);
@@ -18,15 +17,34 @@ sub new {
 }
 
 sub from_string {
-             shift;
-    my $in = shift;
+    my $self = shift;
+    my $in   = shift;
+
+    #my @unknown = ();
+    my $unknown = '';
 
     print "->$in<-\n";
 
     #
     while ( $in =~ /(.)/g) {
-        print "- '$1'\n";
+        my $char = $1;
+        #print "- '$char'\n";
+        unless ($char =~ /[\s:=;,]/) {
+            $unknown .= $char;
+            print "--$unknown\n";
+        }
+        elsif ($char =~ /[=:]/) {
+            print "\nVAR:($unknown)\n";
+            $unknown = '';
+        }
+        elsif ($char =~ /[;,]/) {
+            print "\nDAT:($unknown)\n";
+            $unknown = '';
+        }
+        elsif ($char =~ /[\s]/) {
+        }
     }
+    print "\nDAT:($unknown)\n";
 
     #return $out;
 }
