@@ -27,15 +27,31 @@ sub from_string {
             default_action => '::array',
             source         => \(<<'END_OF_SOURCE'),
     
-:start        ::= name_value_pairs
-name_value_pairs ::= name_value_pair+
-name_value_pair ::= name zuweiser value terminator
-name            ~ [\w]+
-zuweiser        ~ [=]
-value           ~ [\d\w]+
-terminator      ~ [;\n\s]
-:discard        ~ ws
-ws              ~ [\s]+
+:start              ::= name_value_pairs
+name_value_pairs    ::= name_value_pair+
+name_value_pair     ::= name assignation value terminator
+
+name                ~   name_start name_end
+name_start          ~   [\w]
+name_end            ~   [\w\d]+
+
+assignation         ~   assignation_start assignation_end
+assignation_start   ~   [=\-:]
+assignation_end     ~   [>]*
+
+value               ~   val | single_quoted_val | double_quoted_val
+val                 ~   [^\n\s;]+
+single_quoted_val   ~   single_quote val_singleq_content single_quote
+double_quoted_val   ~   double_quote val_doubleq_content double_quote
+single_quote        ~   [']
+double_quote        ~   ["]
+val_singleq_content ~   [^']+
+val_doubleq_content ~   [^"]+
+
+terminator          ~   [;\n\s]
+
+:discard            ~   ws
+ws                  ~   [\s]+
 
 END_OF_SOURCE
     });

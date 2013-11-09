@@ -12,7 +12,19 @@ my $parse = Config::Zirka->new();
 # General module tests... #
 ###########################
 
-my $res = $parse->from_string('var = 1; foo = 55; bar = abc; foobar = l33t;');
+my $res = $parse->from_string(
+            'var = 1;'
+           .'foo = "55";'
+           .'bar = abc;'
+           .'foo2 = l33t;'
+           .'foobar = "abc def";'
+           .'key -> value;'
+           .'key => value;'
+#           .'number:123;'
+#           .'number :123;'
+           .'number : 123;'
+#           ."number ': 123';"
+          );
 
 print "\n---\n$res\n---\n";
 
