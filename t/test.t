@@ -20,8 +20,10 @@ my $obj = $module->new();
 isa_ok($obj, $module);
 
 can_ok($obj, 'new');
-
-my $res = $obj->from_string('name = "Name"; version = 1.2');
+my $data = 'ab = 3;cd = 88  ;   ef  = abcdf;'
+. 'ab = rrrr;';
+my $res = $obj->from_string($data);
+#my $res = $obj->from_string('name = "Name"; version = 1.2');
 
 print "\n---\n$res\n---\n";
 

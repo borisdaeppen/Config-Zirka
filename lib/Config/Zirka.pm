@@ -5,6 +5,9 @@ our $VERSION = 0.1;
 use strict;
 use warnings;
 
+use Marpa::R2;
+use Data::Printer;
+
 # Constructor of this class
 sub new {
     my $self=shift;
@@ -20,33 +23,32 @@ sub from_string {
     my $self = shift;
     my $in   = shift;
 
-    #my @unknown = ();
-    my $unknown = '';
+    my $g = Marpa::R2::Scanless::G->new({
+            default_action => '::array',
+            source         => \(<<'END_OF_SOURCE'),
+    
+:start        ::= name_value_pairs
+name_value_pairs ::= name_value_pair+
+name_value_pair ::= name zuweiser value terminator
+name            ~ [\w]+
+zuweiser        ~ [=]
+value           ~ [\d\w]+
+terminator      ~ [;\n\s]
+:discard        ~ ws
+ws              ~ [\s]+
 
-    print "->$in<-\n";
+END_OF_SOURCE
+    });
+    
+    my $re = Marpa::R2::Scanless::R->new({ grammar => $g });
+    
+    print "Trying to parse:\n$in\n\n";
+    $re->read(\$in);
 
-    #
-    while ( $in =~ /(.)/g) {
-        my $char = $1;
-        #print "- '$char'\n";
-        unless ($char =~ /[\s:=;,]/) {
-            $unknown .= $char;
-            print "--$unknown\n";
-        }
-        elsif ($char =~ /[=:]/) {
-            print "\nVAR:($unknown)\n";
-            $unknown = '';
-        }
-        elsif ($char =~ /[;,]/) {
-            print "\nDAT:($unknown)\n";
-            $unknown = '';
-        }
-        elsif ($char =~ /[\s]/) {
-        }
-    }
-    print "\nDAT:($unknown)\n";
+    my $value = ${$re->value};
+    p $value;
 
-    #return $out;
+
 }
 
 1;
