@@ -48,7 +48,7 @@ double_quote        ~   ["]
 val_singleq_content ~   [^']+
 val_doubleq_content ~   [^"]+
 
-terminator          ~   [;\n\s]
+terminator          ~   [;\n\s]*
 
 :discard            ~   ws
 ws                  ~   [\s]+
