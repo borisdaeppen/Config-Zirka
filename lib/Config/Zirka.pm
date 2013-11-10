@@ -15,8 +15,15 @@ my $data_structure = ''
 
 # we will have name-value pairs
 .'
-:start              ::= name_value_pairs
-name_value_pairs    ::= name_value_pair+
+:start              ::= config_data
+config_data         ::= data_set+
+data_set            ::= name_value_pair | list
+'
+# LISTS
+.'
+list                ::= name assignation list_opener config_data list_closer
+list_opener         ~   [{]
+list_closer         ~   [}]
 '
 # of which each pair has this structure
 .'
@@ -26,7 +33,7 @@ name_value_pair     ::= name assignation value terminator
 .'
 name                ~   name_start name_end
 name_start          ~   [\w]
-name_end            ~   [\w\d]+
+name_end            ~   [\w\d]*
 '
 # ASSIGNATION
 .'
@@ -37,7 +44,7 @@ assignation_end     ~   [>]*
 # VALUE
 .'
 value               ~   val | single_quoted_val | double_quoted_val
-val                 ~   [^\n\s;]+
+val                 ~   [^\n\s;{]+
 single_quoted_val   ~   single_quote val_singleq_content single_quote
 double_quoted_val   ~   double_quote val_doubleq_content double_quote
 '
