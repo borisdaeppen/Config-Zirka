@@ -15,6 +15,8 @@ my @files = read_dir ('t/configfiles_to_pass');
 
 for my $file ( @files ) {
 
+    next if ($file =~ /^_.*/);
+
     $count_of_tests++;
 
     my $text = read_file( 't/configfiles_to_pass/' . $file ) ;
